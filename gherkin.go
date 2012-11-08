@@ -31,8 +31,21 @@ func (s *Story) EndStep() {
   fmt.Println("END STEP\n")
 }
 
+type StepFunc func(map[string]string)
 
-func FindStepMatcher(stepType string, sentence string) {
+
+
+
+type stepMatcher struct {
+  stepType string
+  pattern string
+  compiledPattern interface{}
+  stepFunc StepFunc
+}
+
+var singleMatcher stepMatcher;
+
+func FindStepMatcher(stepType string, sentence string) StepFunc {
   //sentence := "it is really $what"
 
   // match $_______ and fill an array with each as a key
@@ -42,9 +55,18 @@ func FindStepMatcher(stepType string, sentence string) {
 
 
   // we can probably pre-compile regex matchers for each step
+
+  return singleMatcher.stepFunc
+
 }
 
 
-func AddMatcher(stepType string, pattern string, stepFunc func(map[string]interface{})) {
+func AddMatcher(stepType string, pattern string, stepFunc StepFunc) {
+  singleMatcher = stepMatcher{
+    stepType: stepType,
+    pattern: pattern,
+    stepFunc: stepFunc,
 
+    compiledPattern: nil, // reverse to a regex
+  }
 }
