@@ -1,0 +1,27 @@
+package main
+
+type Gherkin Peg {
+  Story
+}
+
+
+
+Story <- Description? { p.BeginStory(string(buffer[begin:end])) } Scenario+  { p.EndStory() } !.
+
+Description <- String nl
+
+Scenario <- 'Scenario:' s <String> { p.BeginScenario(string(buffer[begin:end])) } nl Step* { p.EndScenario() }
+
+Step <- StepStart s <String> { p.BeginStep(string(buffer[begin:end])); p.EndStep() } nl 
+
+StepStart <- < ('Given' / 'When' / 'Then' / 'And') > { p.StepType(string(buffer[begin:end])) } 
+
+String <- < (!'\n' .)+ >
+
+
+nl <- ('\r' / '\n')+
+
+s <- (' ' / '\t')*
+
+
+
