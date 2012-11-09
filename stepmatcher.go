@@ -1,12 +1,9 @@
 package gogherkit
 
 import (
-
 	"fmt"
 	"regexp"
 )
-
-
 
 type StepFuncParam map[string]string
 type StepFunc func(StepFuncParam)
@@ -19,9 +16,8 @@ type stepMatcher struct {
 	stepFunc        StepFunc
 }
 
-
 type StepManager struct {
-  matchers []stepMatcher
+	matchers []stepMatcher
 }
 
 func (sm StepManager) FindStepMatcher(stepType string, sentence string) (StepFunc, StepFuncParam) {

@@ -1,13 +1,12 @@
 package gogherkit
 
 import (
-
 	goLogger "github.com/googollee/go-logger"
 )
 
 type Story struct {
-	stepType string
-  StepManager *StepManager
+	stepType    string
+	StepManager *StepManager
 }
 
 var logger, _ = goLogger.New(nil, "gogherkit.story")
