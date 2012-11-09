@@ -6,26 +6,10 @@ import (
 	"testing"
 )
 
-type BeachCases struct {
-	givenTodayIsHot StepFunc `blahb$la`
-
-	whenTheTimeReaches StepFunc
-
-	thenTheKidsAreAt StepFunc
-}
-
 func TestHandler(t *testing.T) {
 	ggk := new(GoGherKit)
 
-	ggk.LoadFeatureFile("features/beach.feature")
-
-	/*
-		ggk.AddSmartMatcher("Given today it is $temp degrees $where", func(temp String, where String) {
-			fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(temp), strings.ToUpper(where))
-		})
-	*/
-
-	ggk.AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
+  ggk.AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
 		fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(params["temp"]), strings.ToUpper(params["where"]))
 	})
 
@@ -37,5 +21,5 @@ func TestHandler(t *testing.T) {
 		fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!\n", strings.ToUpper(params["place"]))
 	})
 
-	ggk.Run(t)
+	ggk.RunFeatureFile("features/beach.feature")
 }
