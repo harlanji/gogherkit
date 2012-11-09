@@ -35,12 +35,12 @@ Scenario <-
 Step <- 
   WS* <('Given' / 'When' / 'Then' / 'And')> 
   { p.StepType(buffer[begin:end]) } 
-  <String> 
+  <String>
   { p.BeginStep(buffer[begin:end]); p.EndStep() } 
   MLString? 
   LINES+
 
-String <- ([A-Za-z0-9\t ]+)
+String <- [^\n]+
 
 WS <- (' ' / '\t')
 
