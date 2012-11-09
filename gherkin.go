@@ -1,36 +1,48 @@
 package gogherkit
 
 import (
-	//goLogger "github.com/googollee/go-logger"
-	"io/ioutil"
-	"testing"
+	goLogger "github.com/googollee/go-logger"
 )
 
-type GoGherKit struct {
-	gk *Gherkin
-
-	StepManager
+type Story struct {
+	stepType    string
+	StepManager *StepManager
 }
 
-func (gogherkit *GoGherKit) LoadFeatureFile(path string) {
-	buffer, err := ioutil.ReadFile(path)
-	if err != nil {
-		logger.Err(err.Error())
+var logger, _ = goLogger.New(nil, "gogherkit.story")
+
+func (s *Story) BeginScenario(name string) {
+	logger.Debug("BEGIN SCENARIO: %s\n", name)
+}
+
+func (s *Story) EndScenario() {
+	logger.Debug("END SCENARIO\n")
+}
+func (s *Story) BeginStory(name string) {
+	logger.Debug("BEGIN STORY: %s\n", name)
+}
+func (s *Story) EndStory() {
+	logger.Debug("END STORY\n")
+}
+func (s *Story) StepType(buf string) {
+	logger.Debug("STEP TYPE: %s\n", buf)
+
+	s.stepType = buf
+}
+
+func (s *Story) BeginStep(name string) {
+	logger.Debug("BEGIN STEP: %s\n", name)
+
+	stepFunc, params := s.StepManager.FindStepMatcher(s.stepType, name)
+
+	if stepFunc == nil {
+		logger.Debug("Could not find step matcher for func %s\n", name)
+		return
 	}
 
-	gogherkit.LoadFeatureText(string(buffer))
+	stepFunc(params)
 }
 
-func (gogherkit *GoGherKit) LoadFeatureText(content string) {
-	gogherkit.gk = &Gherkin{Buffer: content}
-	gogherkit.gk.StepManager = &gogherkit.StepManager
-	gogherkit.gk.Init()
-
-	if err := gogherkit.gk.Parse(); err != nil {
-		logger.Err(err.Error())
-	}
-}
-
-func (gogherkit *GoGherKit) Run(t *testing.T) {
-	gogherkit.gk.Execute()
+func (s *Story) EndStep() {
+	logger.Debug("END STEP\n")
 }
