@@ -1,6 +1,5 @@
 package main
 
-
 type LoginAPI struct {
 	credentials map[string]string
 }

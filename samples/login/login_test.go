@@ -1,7 +1,7 @@
 package main
 
 import (
-  "github.com/harlanji/gogherkit"
+	"github.com/harlanji/gogherkit"
 	"testing"
 )
 
