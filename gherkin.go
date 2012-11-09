@@ -4,6 +4,7 @@ import (
   "fmt"
   "regexp"
   "github.com/orfjackal/gospec/src/gospec"
+  goLogger "github.com/googollee/go-logger"
 )
 
 type Story struct {
@@ -17,14 +18,11 @@ type Story struct {
 
 
 
-
-
-
-
+var logger, _ = goLogger.New(goLogger.Stdout, "gherkin")
 
 
 func (s *Story) BeginScenario(name string) {
-  fmt.Printf("BEGIN SCENARIO: %s\n", name)
+  logger.Debug("BEGIN SCENARIO: %s\n", name)
 
   s.steps = make(chan func())
 
@@ -39,33 +37,33 @@ func (s *Story) BeginScenario(name string) {
 }
 
 func (s *Story) EndScenario() {
-  fmt.Println("END SCENARIO\n")
+  logger.Debug("END SCENARIO\n")
 }
 func (s *Story) BeginStory(name string) {
-  fmt.Printf("BEGIN STORY: %s\n", name)
+  logger.Debug("BEGIN STORY: %s\n", name)
 
   s.r = gospec.NewRunner()
 }
 func (s *Story) EndStory() {
-  fmt.Println("END STORY\n")
+  logger.Debug("END STORY\n")
 
   s.r.Run()
 
   s.r.Results()
 }
 func (s *Story) StepType(buf string) {
-  fmt.Printf("STEP TYPE: %s\n", buf)
+  logger.Debug("STEP TYPE: %s\n", buf)
 
   s.stepType = buf
 }
 
 func (s *Story) BeginStep(name string) {
-  fmt.Printf("BEGIN STEP: %s\n", name)
+  logger.Debug("BEGIN STEP: %s\n", name)
 
   stepFunc, params := FindStepMatcher(s.stepType, name)
 
   if stepFunc == nil {
-    fmt.Printf("Could not find step matcher for func %s\n", name)
+    logger.Debug("Could not find step matcher for func %s\n", name)
     return
   }
 
@@ -78,7 +76,7 @@ func (s *Story) BeginStep(name string) {
 
 
 func (s *Story) EndStep() {
-  fmt.Println("END STEP\n")
+  logger.Debug("END STEP\n")
 }
 
 type StepFuncParam map[string]string
@@ -128,12 +126,12 @@ func FindStepMatcher(stepType string, sentence string) (StepFunc, StepFuncParam)
       for i, name := range m.paramNames {
         value := sentence[ mrng[2*(i+1)]:mrng[2*(i+1)+1] ]
 
-        fmt.Printf("Param(%d) %s = %s\n", i, name, value)
+        logger.Debug("Param(%d) %s = %s\n", i, name, value)
 
         params[ name ] = value
       }
 
-      fmt.Printf("applying. param %s = %s\n", m.paramNames[0], sentence[mrng[2]:mrng[3]])
+      logger.Debug("applying. param %s = %s\n", m.paramNames[0], sentence[mrng[2]:mrng[3]])
 
       return m.stepFunc, params
     }
@@ -149,7 +147,7 @@ func AddMatcher(stepType string, pattern string, stepFunc StepFunc) {
 
   tokens := patternRgx.FindAllStringSubmatchIndex(pattern, -1)
 
-  fmt.Printf("Found %d tokens in pattern: %s\n", len(tokens), pattern)
+  logger.Debug("Found %d tokens in pattern: %s\n", len(tokens), pattern)
 
   var newPattern = "";
   var startOffset = 0;
@@ -160,12 +158,12 @@ func AddMatcher(stepType string, pattern string, stepFunc StepFunc) {
     
     newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:pair[0]]), "(.+)")
     startOffset = pair[1]
-    fmt.Printf("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
+    logger.Debug("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
   
   
   }
 
-  fmt.Printf("new pattern: %s\n", newPattern);
+  logger.Debug("new pattern: %s\n", newPattern);
 
 
   matcher := stepMatcher{
