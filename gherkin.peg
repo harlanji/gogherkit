@@ -6,7 +6,7 @@ type Gherkin Peg {
 
 
 Story <- 
-  <String>
+  WS* 'Feature:' <String>
   { p.BeginStory(buffer[begin:end]) } 
   LINES+ 
   Scenario+ 
