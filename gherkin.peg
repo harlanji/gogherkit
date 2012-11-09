@@ -5,23 +5,20 @@ type Gherkin Peg {
 }
 
 
+Story <- <String> {p.BeginStory(buffer[begin:end]) } LINES+ Scenario+ {p.EndStory()} !.
 
-Story <- Description? { p.BeginStory(string(buffer[begin:end])) } Scenario+  { p.EndStory() } !.
+Scenario <- WS* 'Scenario:' <String> { p.BeginScenario(buffer[begin:end]) } LINES+ Step* {p.EndScenario()}
 
-Description <- String nl
+Step <- WS* <('Given' / 'When' / 'Then' / 'And')> {p.StepType(buffer[begin:end])} <String> {p.BeginStep(buffer[begin:end]); p.EndStep()} MLString? LINES+
 
-Scenario <- 'Scenario:' s <String> { p.BeginScenario(string(buffer[begin:end])) } nl Step* { p.EndScenario() }
+String <- ([A-Za-z0-9\t ]+)
 
-Step <- StepStart s <String> { p.BeginStep(string(buffer[begin:end])); p.EndStep() } nl 
+WS <- (' ' / '\t')
 
-StepStart <- < ('Given' / 'When' / 'Then' / 'And') > { p.StepType(string(buffer[begin:end])) } 
+NL <- ('\n' / '\r' / '\r\n')
 
-String <- < (!'\n' .)+ >
-
-
-nl <- ('\r' / '\n')+
-
-s <- (' ' / '\t')*
+LINES <- (WS* NL+)
 
 
 
+MLString <- ('\"' '\"' '\"' LINES* '\"' '\"' '\"')
