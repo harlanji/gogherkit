@@ -10,7 +10,7 @@ import (
 type Story struct {
   stepType string
 
-  steps chan func()
+  steps chan func(*gospec.Context)
 
   r *gospec.Runner
 }
@@ -24,12 +24,12 @@ var logger, _ = goLogger.New(goLogger.Stdout, "gherkin")
 func (s *Story) BeginScenario(name string) {
   logger.Debug("BEGIN SCENARIO: %s\n", name)
 
-  s.steps = make(chan func())
+  s.steps = make(chan func(*gospec.Context))
 
   s.r.AddSpec(func(c gospec.Context) {
     go func() {
       for stepFunc := range s.steps {
-        stepFunc()
+        stepFunc(&c)
       }
     }()
   })
@@ -46,10 +46,6 @@ func (s *Story) BeginStory(name string) {
 }
 func (s *Story) EndStory() {
   logger.Debug("END STORY\n")
-
-  s.r.Run()
-
-  s.r.Results()
 }
 func (s *Story) StepType(buf string) {
   logger.Debug("STEP TYPE: %s\n", buf)
@@ -68,8 +64,8 @@ func (s *Story) BeginStep(name string) {
   }
 
   go func() {
-  s.steps <- func() {
-    stepFunc(params)
+  s.steps <- func(c *gospec.Context) {
+    stepFunc(params, c)
   }
   }()
 }
@@ -80,7 +76,7 @@ func (s *Story) EndStep() {
 }
 
 type StepFuncParam map[string]string
-type StepFunc func(StepFuncParam)
+type StepFunc func(StepFuncParam, *gospec.Context)
 
 
 

@@ -6,6 +6,7 @@ import (
   "strings"
   "io/ioutil"
   "log"
+  "github.com/orfjackal/gospec/src/gospec"
 )
 
 func TestHandler(t *testing.T) {
@@ -25,16 +26,23 @@ func TestHandler(t *testing.T) {
 
 
 
-  AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
+  AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam, c *gospec.Context) {
     fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(params["temp"]), strings.ToUpper(params["where"]))
   })
-  AddMatcher("When", "the time reaches $time", func(params StepFuncParam) {
+  AddMatcher("When", "the time reaches $time", func(params StepFuncParam, c *gospec.Context) {
     fmt.Printf("AND IT JUST TURNED %s!!!!\n", strings.ToUpper(params["time"]))
   })
-  AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam) {
+  AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam, c *gospec.Context) {
     fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!\n", strings.ToUpper(params["place"]))
+
+    (*c).Expect(56, gospec.Equals, 56)
+    (*c).Expect(56, gospec.Equals, 56)
+    (*c).Expect(56, gospec.Equals, 56)
+    (*c).Expect(56, gospec.Equals, 56)
   })
 
 
   gherkin.Execute()
+
+  gospec.MainGoTest(gherkin.r, t)
 }
