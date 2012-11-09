@@ -6,8 +6,17 @@ import (
   "strings"
   "io/ioutil"
   "log"
-  "github.com/orfjackal/gospec/src/gospec"
 )
+
+
+type BeachCases struct {
+
+  givenTodayIsHot StepFunc `blahb$la`
+
+  whenTheTimeReaches StepFunc
+
+  thenTheKidsAreAt StepFunc
+}
 
 func TestHandler(t *testing.T) {
 
@@ -26,23 +35,18 @@ func TestHandler(t *testing.T) {
 
 
 
-  AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam, c *gospec.Context) {
+  AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
     fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(params["temp"]), strings.ToUpper(params["where"]))
   })
-  AddMatcher("When", "the time reaches $time", func(params StepFuncParam, c *gospec.Context) {
+  AddMatcher("When", "the time reaches $time", func(params StepFuncParam) {
     fmt.Printf("AND IT JUST TURNED %s!!!!\n", strings.ToUpper(params["time"]))
   })
-  AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam, c *gospec.Context) {
+  AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam) {
     fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!\n", strings.ToUpper(params["place"]))
 
-    (*c).Expect(56, gospec.Equals, 56)
-    (*c).Expect(56, gospec.Equals, 56)
-    (*c).Expect(56, gospec.Equals, 56)
-    (*c).Expect(56, gospec.Equals, 56)
   })
 
 
   gherkin.Execute()
 
-  gospec.MainGoTest(gherkin.r, t)
 }

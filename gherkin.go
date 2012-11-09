@@ -3,37 +3,21 @@ package gogherkit
 import (
   "fmt"
   "regexp"
-  "github.com/orfjackal/gospec/src/gospec"
   goLogger "github.com/googollee/go-logger"
 )
 
 type Story struct {
   stepType string
-
-  steps chan func(*gospec.Context)
-
-  r *gospec.Runner
 }
 
 
 
 
-var logger, _ = goLogger.New(goLogger.Stdout, "gherkin")
+var logger, _ = goLogger.New(nil, "gherkin")
 
 
 func (s *Story) BeginScenario(name string) {
   logger.Debug("BEGIN SCENARIO: %s\n", name)
-
-  s.steps = make(chan func(*gospec.Context))
-
-  s.r.AddSpec(func(c gospec.Context) {
-    go func() {
-      for stepFunc := range s.steps {
-        stepFunc(&c)
-      }
-    }()
-  })
-
 }
 
 func (s *Story) EndScenario() {
@@ -41,8 +25,6 @@ func (s *Story) EndScenario() {
 }
 func (s *Story) BeginStory(name string) {
   logger.Debug("BEGIN STORY: %s\n", name)
-
-  s.r = gospec.NewRunner()
 }
 func (s *Story) EndStory() {
   logger.Debug("END STORY\n")
@@ -63,11 +45,7 @@ func (s *Story) BeginStep(name string) {
     return
   }
 
-  go func() {
-  s.steps <- func(c *gospec.Context) {
-    stepFunc(params, c)
-  }
-  }()
+  stepFunc(params)
 }
 
 
@@ -76,7 +54,7 @@ func (s *Story) EndStep() {
 }
 
 type StepFuncParam map[string]string
-type StepFunc func(StepFuncParam, *gospec.Context)
+type StepFunc func(StepFuncParam)
 
 
 
