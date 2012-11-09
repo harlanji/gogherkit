@@ -9,10 +9,16 @@ Story <-
   WS* 'Feature:' <String>
   { p.BeginStory(buffer[begin:end]) } 
   LINES+
+  Narrative?
   Background?
   Scenario+ 
   { p.EndStory() } !.
 
+Narrative <-
+  WS* 'In order to' String+ LINES+
+  WS* String+ 'should be able to' LINES+
+  WS* String+
+  LINES+
 
 Background <- 
   WS* 'Background:' String 
@@ -28,9 +34,9 @@ Scenario <-
 
 Step <- 
   WS* <('Given' / 'When' / 'Then' / 'And')> 
-  {p.StepType(buffer[begin:end])} 
+  { p.StepType(buffer[begin:end]) } 
   <String> 
-  {p.BeginStep(buffer[begin:end]); p.EndStep()} 
+  { p.BeginStep(buffer[begin:end]); p.EndStep() } 
   MLString? 
   LINES+
 
