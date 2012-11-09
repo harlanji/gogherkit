@@ -5,8 +5,8 @@
 package gogherkit
 
 import (
-	"log"
 	"io/ioutil"
+	"log"
 )
 
 func main() {
@@ -23,5 +23,5 @@ func main() {
 	}
 	//jBehave.Highlighter()
 
-  gherkin.Execute()
+	gherkin.Execute()
 }
