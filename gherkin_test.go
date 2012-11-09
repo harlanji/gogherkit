@@ -11,7 +11,7 @@ import (
 func TestHandler(t *testing.T) {
 
 
-	buffer, err := ioutil.ReadFile("features/registration_and_login.feature")
+	buffer, err := ioutil.ReadFile("features/beach.feature")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,16 +25,16 @@ func TestHandler(t *testing.T) {
 
 
 
-  AddMatcher("Given", "today it is $temp degrees $where", func(params map[string]string) {
-    fmt.Printf("TODAY IT IS %s DEGREES %s!!!!", strings.ToUpper(params["temp"]), strings.ToUpper(params["where"]))
+  AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
+    fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(params["temp"]), strings.ToUpper(params["where"]))
   })
-  AddMatcher("When", "the time reaches $time", func(params map[string]string) {
-    fmt.Printf("AND IT JUST TURNED %s!!!!", strings.ToUpper(params["time"]))
+  AddMatcher("When", "the time reaches $time", func(params StepFuncParam) {
+    fmt.Printf("AND IT JUST TURNED %s!!!!\n", strings.ToUpper(params["time"]))
   })
-  AddMatcher("Then", "the kids are at the $place", func(params map[string]string) {
-    fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!", strings.ToUpper(params["place"]))
+  AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam) {
+    fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!\n", strings.ToUpper(params["place"]))
   })
 
 
-  //gherkin.Execute()
+  gherkin.Execute()
 }
