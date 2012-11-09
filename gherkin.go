@@ -3,14 +3,39 @@ package gogherkit
 import (
   "fmt"
   "regexp"
+  "github.com/orfjackal/gospec/src/gospec"
 )
 
 type Story struct {
   stepType string
+
+  steps chan func()
+
+  r *gospec.Runner
 }
+
+
+
+
+
+
+
+
+
 
 func (s *Story) BeginScenario(name string) {
   fmt.Printf("BEGIN SCENARIO: %s\n", name)
+
+  s.steps = make(chan func())
+
+  s.r.AddSpec(func(c gospec.Context) {
+    go func() {
+      for stepFunc := range s.steps {
+        stepFunc()
+      }
+    }()
+  })
+
 }
 
 func (s *Story) EndScenario() {
@@ -19,10 +44,14 @@ func (s *Story) EndScenario() {
 func (s *Story) BeginStory(name string) {
   fmt.Printf("BEGIN STORY: %s\n", name)
 
-
+  s.r = gospec.NewRunner()
 }
 func (s *Story) EndStory() {
   fmt.Println("END STORY\n")
+
+  s.r.Run()
+
+  s.r.Results()
 }
 func (s *Story) StepType(buf string) {
   fmt.Printf("STEP TYPE: %s\n", buf)
@@ -40,8 +69,14 @@ func (s *Story) BeginStep(name string) {
     return
   }
 
-  stepFunc( params )
+  go func() {
+  s.steps <- func() {
+    stepFunc(params)
+  }
+  }()
 }
+
+
 func (s *Story) EndStep() {
   fmt.Println("END STEP\n")
 }
