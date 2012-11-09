@@ -19,7 +19,7 @@ func (gogherkit *GoGherKit) RunFeatureFile(path string) {
 }
 
 func (gogherkit *GoGherKit) RunFeatureText(content string) {
-  gk := &Gherkin{Buffer: content}
+	gk := &Gherkin{Buffer: content}
 	gk.StepManager = &gogherkit.StepManager
 	gk.Init()
 

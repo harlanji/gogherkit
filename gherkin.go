@@ -27,9 +27,9 @@ func (s *Story) EndStory() {
 func (s *Story) StepType(buf string) {
 	logger.Debug("STEP TYPE: %s\n", buf)
 
-  if buf != "And" {
-	  s.stepType = buf
-  }
+	if buf != "And" {
+		s.stepType = buf
+	}
 }
 
 func (s *Story) BeginStep(name string) {
