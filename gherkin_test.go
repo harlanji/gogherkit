@@ -2,8 +2,6 @@ package gogherkit
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strings"
 	"testing"
 )
@@ -17,30 +15,28 @@ type BeachCases struct {
 }
 
 func TestHandler(t *testing.T) {
+  ggk := new(GoGherKit)
 
-	buffer, err := ioutil.ReadFile("features/beach.feature")
-	if err != nil {
-		log.Fatal(err)
-	}
+  ggk.LoadFeatureFile("features/beach.feature")
 
-	gherkin := &Gherkin{Buffer: string(buffer)}
-	gherkin.Init()
+  /*
+	ggk.AddSmartMatcher("Given today it is $temp degrees $where", func(temp String, where String) {
+		fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(temp), strings.ToUpper(where))
+	})
+  */
 
-	if err := gherkin.Parse(); err != nil {
-		log.Fatal(err)
-	}
 
-	AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
+	ggk.AddMatcher("Given", "today it is $temp degrees $where", func(params StepFuncParam) {
 		fmt.Printf("TODAY IT IS %s DEGREES %s!!!!\n", strings.ToUpper(params["temp"]), strings.ToUpper(params["where"]))
 	})
-	AddMatcher("When", "the time reaches $time", func(params StepFuncParam) {
+
+	ggk.AddMatcher("When", "the time reaches $time", func(params StepFuncParam) {
 		fmt.Printf("AND IT JUST TURNED %s!!!!\n", strings.ToUpper(params["time"]))
 	})
-	AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam) {
-		fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!\n", strings.ToUpper(params["place"]))
 
+	ggk.AddMatcher("Then", "the kids are at the $place", func(params StepFuncParam) {
+		fmt.Printf("AND NOW THE KIDS ARE AT THE %s!!!!\n", strings.ToUpper(params["place"]))
 	})
 
-	gherkin.Execute()
-
+	ggk.Run(t)
 }
