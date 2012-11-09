@@ -8,10 +8,16 @@ type Gherkin Peg {
 Story <- 
   WS* 'Feature:' <String>
   { p.BeginStory(buffer[begin:end]) } 
-  LINES+ 
+  LINES+
+  Background?
   Scenario+ 
   { p.EndStory() } !.
 
+
+Background <- 
+  WS* 'Background:' String 
+  LINES+
+  Step+
 
 Scenario <- 
   WS* 'Scenario:' <String> 
