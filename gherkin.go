@@ -9,7 +9,7 @@ type Story struct {
 	StepManager *StepManager
 }
 
-var logger, _ = goLogger.New(nil, "gogherkit.story")
+var logger, _ = goLogger.New(goLogger.Stdout, "gogherkit.story")
 
 func (s *Story) BeginScenario(name string) {
 	logger.Debug("BEGIN SCENARIO: %s\n", name)

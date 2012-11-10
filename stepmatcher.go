@@ -3,6 +3,7 @@ package gogherkit
 import (
 	"fmt"
 	"regexp"
+  "strconv"
 )
 
 type StepFuncParam map[string]string
@@ -78,11 +79,13 @@ func (sm *StepManager) AddMatcher(stepType string, pattern string, stepFunc Step
 	for i, pair := range tokens {
 		params[i] = pattern[pair[4]:pair[5]]
 
-		newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:pair[0]]), "(.+)")
+		newPattern = fmt.Sprint(newPattern, strconv.Quote(string(pattern[startOffset:pair[0]])), "(.+)")
 		startOffset = pair[1]
 		logger.Debug("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
 
 	}
+
+  newPattern = fmt.Sprint(newPattern, strconv.Quote(string(pattern[startOffset:])))
 
 	logger.Debug("new pattern: %s\n", newPattern)
 
