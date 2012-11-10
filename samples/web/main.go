@@ -5,20 +5,20 @@ import (
 	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func rootHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
-var server *http.Server
+func CreateHttpHandler() http.Handler {
+  handler := http.NewServeMux()
 
-func RunWebServer() {
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
+  handler.HandleFunc("/", rootHandler)
 
+  return handler
 }
 
-func StopWebServer() {
-	// TODO figure this out... 
+func RunWebServer() {
+	http.ListenAndServe(":8080", CreateHttpHandler())
 }
 
 func main() {
