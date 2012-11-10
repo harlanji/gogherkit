@@ -19,7 +19,7 @@ func TestWeb(t *testing.T) {
 		// todo: figure out how to start/stop it at will. for now, just assume we're good.
 	})
 
-	ggk.AddMatcher("When", "I request the main page with name $name", func(params gogherkit.StepFuncParam) {
+	ggk.AddMatcher("When", "I request the main page with name '$name'", func(params gogherkit.StepFuncParam) {
 		name := params["name"]
 
 		req, err := http.NewRequest("GET", fmt.Sprintf("/%s", name), nil)
