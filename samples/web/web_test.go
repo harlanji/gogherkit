@@ -1,19 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"github.com/harlanji/gogherkit"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
-  "net/http"
-  "net/http/httptest"
-  "fmt"
-  "strings"
 )
 
-
-
 func TestWeb(t *testing.T) {
-  recorder :=  httptest.NewRecorder()
-  handler := CreateHttpHandler()
+	recorder := httptest.NewRecorder()
+	handler := CreateHttpHandler()
 
 	ggk := new(gogherkit.GoGherKit)
 
@@ -24,20 +22,20 @@ func TestWeb(t *testing.T) {
 	ggk.AddMatcher("When", "I request the main page with name $name", func(params gogherkit.StepFuncParam) {
 		name := params["name"]
 
-    req, err := http.NewRequest("GET", fmt.Sprintf("/%s", name), nil)
+		req, err := http.NewRequest("GET", fmt.Sprintf("/%s", name), nil)
 
-    if err != nil {
-      t.Error("Could not create HTTP request")
-    }
+		if err != nil {
+			t.Error("Could not create HTTP request")
+		}
 
-    handler.ServeHTTP(recorder, req)
+		handler.ServeHTTP(recorder, req)
 	})
 
 	ggk.AddMatcher("Then", "the text that comes back contains '$text'", func(params gogherkit.StepFuncParam) {
-    body := params["text"]
-    if !strings.Contains(string(recorder.Body.Bytes()), body) {
-        t.Error("Body does not contain the expected text")
-      }
+		body := params["text"]
+		if !strings.Contains(string(recorder.Body.Bytes()), body) {
+			t.Error("Body does not contain the expected text")
+		}
 	})
 
 	ggk.RunFeatureFile("web.feature")

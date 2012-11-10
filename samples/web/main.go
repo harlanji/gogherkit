@@ -10,11 +10,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateHttpHandler() http.Handler {
-  handler := http.NewServeMux()
+	handler := http.NewServeMux()
 
-  handler.HandleFunc("/", rootHandler)
+	handler.HandleFunc("/", rootHandler)
 
-  return handler
+	return handler
 }
 
 func RunWebServer() {

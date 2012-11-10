@@ -3,7 +3,7 @@ package gogherkit
 import (
 	"fmt"
 	"regexp"
-  "strconv"
+	"strconv"
 )
 
 type StepFuncParam map[string]string
@@ -85,7 +85,7 @@ func (sm *StepManager) AddMatcher(stepType string, pattern string, stepFunc Step
 
 	}
 
-  newPattern = fmt.Sprint(newPattern, strconv.Quote(string(pattern[startOffset:])))
+	newPattern = fmt.Sprint(newPattern, strconv.Quote(string(pattern[startOffset:])))
 
 	logger.Debug("new pattern: %s\n", newPattern)
 
