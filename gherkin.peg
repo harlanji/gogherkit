@@ -6,7 +6,7 @@ type Gherkin Peg {
 
 
 Story <- 
-  WS* 'Feature:' <String>
+  WS* 'Feature:' WS* <String>
   { p.BeginStory(buffer[begin:end]) } 
   LINES+
   Narrative?
@@ -15,18 +15,18 @@ Story <-
   { p.EndStory() } !.
 
 Narrative <-
-  WS* 'In order to' String+ LINES+
-  WS* String+ 'should be able to' LINES+
-  WS* String+
+  WS* 'In order to' WS* String+ LINES+
+  WS* String+ WS* 'should be able to' LINES+
+  WS* String+ WS*
   LINES+
 
 Background <- 
-  WS* 'Background:' String 
+  WS* 'Background:' WS* String 
   LINES+
   Step+
 
 Scenario <- 
-  WS* 'Scenario:' <String> 
+  WS* 'Scenario:' WS* <String> 
   { p.BeginScenario(buffer[begin:end]) } 
   LINES+ 
   Step* 
@@ -34,8 +34,8 @@ Scenario <-
 
 Step <- 
   WS* <('Given' / 'When' / 'Then' / 'And')> 
-  { p.StepType(buffer[begin:end]) } 
-  <String>
+  { p.StepType(buffer[begin:end]) }
+  WS* <String>
   { p.BeginStep(buffer[begin:end]); p.EndStep() } 
   MLString? 
   LINES+

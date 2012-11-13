@@ -11,8 +11,7 @@ func TestHandler(t *testing.T) {
 	var loginAPI *LoginAPI
 	var result bool
 
-	// BUG matchers with no tokens cause the system to fail
-	ggk.AddMatcher("Given", "the login system with no $stuff", func(params gogherkit.StepFuncParam) {
+	ggk.AddMatcher("Given", "the login system with no data", func(params gogherkit.StepFuncParam) {
 
 		loginAPI = new(LoginAPI)
 		loginAPI.Init()

@@ -3,7 +3,6 @@ package gogherkit
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 )
 
 type StepFuncParam map[string]string
@@ -55,7 +54,7 @@ func (sm StepManager) FindStepMatcher(stepType string, sentence string) (StepFun
 				params[name] = value
 			}
 
-			logger.Debug("applying. param %s = %s\n", m.paramNames[0], sentence[mrng[2]:mrng[3]])
+			//logger.Debug("applying. param %s = %s\n", m.paramNames[0], sentence[mrng[2]:mrng[3]])
 
 			return m.stepFunc, params
 		}
@@ -74,18 +73,19 @@ func (sm *StepManager) AddMatcher(stepType string, pattern string, stepFunc Step
 
 	var newPattern = ""
 	var startOffset = 0
-	var params = make([]string, len(tokens))
 
-	for i, pair := range tokens {
-		params[i] = pattern[pair[4]:pair[5]]
+  var params = make([]string, len(tokens))
 
-		newPattern = fmt.Sprint(newPattern, strconv.Quote(string(pattern[startOffset:pair[0]])), "(.+)")
-		startOffset = pair[1]
-		logger.Debug("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
+  for i, pair := range tokens {
+    params[i] = pattern[pair[4]:pair[5]]
 
-	}
+    newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:pair[0]]), "(.+)")
+    startOffset = pair[1]
+    logger.Debug("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
 
-	newPattern = fmt.Sprint(newPattern, strconv.Quote(string(pattern[startOffset:])))
+  }
+
+	newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:]))
 
 	logger.Debug("new pattern: %s\n", newPattern)
 
