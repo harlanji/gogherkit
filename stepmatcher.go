@@ -64,6 +64,43 @@ func (sm StepManager) FindStepMatcher(stepType string, sentence string) (StepFun
 
 }
 
+type StepHandler struct {
+	stepType string
+	sm       *StepManager
+	pattern  string
+}
+
+func (sm *StepManager) Given(pattern string) *StepHandler {
+	return sm.addStepHandler("Given", pattern)
+}
+func (sm *StepManager) When(pattern string) *StepHandler {
+	return sm.addStepHandler("When", pattern)
+}
+func (sm *StepManager) Then(pattern string) *StepHandler {
+	return sm.addStepHandler("Then", pattern)
+}
+
+func (sm *StepManager) addStepHandler(stepType string, pattern string) *StepHandler {
+	return &StepHandler{
+		stepType: stepType,
+		sm:       sm,
+		pattern:  pattern,
+	}
+}
+
+/*
+func (sh *StepHandler) Before(f StepFunc) *StepHandler {
+  return sh
+}
+func (sh *StepHandler) After(f StepFunc) *StepHandler {
+  return sh
+}
+*/
+func (sh *StepHandler) Do(f StepFunc) *StepHandler {
+	sh.sm.AddMatcher(sh.stepType, sh.pattern, f)
+	return sh
+}
+
 func (sm *StepManager) AddMatcher(stepType string, pattern string, stepFunc StepFunc) {
 	patternRgx := regexp.MustCompile("(\\$([0-9A-Za-z_]+))") // for some reason :word: doesn't work
 
@@ -74,16 +111,16 @@ func (sm *StepManager) AddMatcher(stepType string, pattern string, stepFunc Step
 	var newPattern = ""
 	var startOffset = 0
 
-  var params = make([]string, len(tokens))
+	var params = make([]string, len(tokens))
 
-  for i, pair := range tokens {
-    params[i] = pattern[pair[4]:pair[5]]
+	for i, pair := range tokens {
+		params[i] = pattern[pair[4]:pair[5]]
 
-    newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:pair[0]]), "(.+)")
-    startOffset = pair[1]
-    logger.Debug("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
+		newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:pair[0]]), "(.+)")
+		startOffset = pair[1]
+		logger.Debug("Param(%d) from [%d:%d], with identifier from [%d:%d] = %s\n", i, pair[0], pair[1], pair[4], pair[5], params[i])
 
-  }
+	}
 
 	newPattern = fmt.Sprint(newPattern, string(pattern[startOffset:]))
 
